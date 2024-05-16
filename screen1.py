@@ -1,6 +1,5 @@
 from tkinter import *
-
-
+from assist import clear_window, create_back_button
 def switch_to_screen_1(window, reset_to_start_screen):
     clear_window(window)
     label = Label(window, text="첫 번째 화면", font=("Helvetica", 20))
@@ -10,7 +9,3 @@ def switch_to_screen_1(window, reset_to_start_screen):
     back_button = Button(window, text="뒤로가기", command=lambda: reset_to_start_screen(window))
     back_button.pack()
 
-
-def clear_window(window):
-    for widget in window.winfo_children():
-        widget.destroy()

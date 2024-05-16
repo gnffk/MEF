@@ -4,7 +4,7 @@ from start_screen import create_start_screen  # 스크린 설정 함수를 임�
 
 window = Tk()
 window.title("MEF")
-window.geometry("1000x800+100+100")
+window.geometry("1200x800+100+100")
 window.resizable(False, False)
 
 def main():

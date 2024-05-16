@@ -1,5 +1,5 @@
 from tkinter import *
-
+from assist import clear_window, create_back_button
 
 def switch_to_screen_3(window, reset_to_start_screen):
     clear_window(window)
@@ -11,6 +11,3 @@ def switch_to_screen_3(window, reset_to_start_screen):
     back_button.pack()
 
 
-def clear_window(window):
-    for widget in window.winfo_children():
-        widget.destroy()
