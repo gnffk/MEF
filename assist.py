@@ -14,11 +14,9 @@ def preload_assets(window):
     background_image = PhotoImage(file='image/korean_book_background.png')
 
 # 배경 설정 함수
-def set_background(window, image_path=None):
+def set_background(window):
     global background_image
-    if image_path:
-        background_image = PhotoImage(file=image_path)
-    background_label = Label(window, image=background_image)
+    background_label = Label(window, image=background_image, bg = '#efc376')
     background_label.image = background_image  # 이미지 객체 유지
     background_label.place(x=0, y=0)
     return background_label
@@ -32,4 +30,4 @@ def clear_window(window):
 
 # 뒤로가기 버튼 생성 함수
 def create_back_button(window, reset_to_start_screen):
-    return Button(window, text="뒤로가기", command=lambda: reset_to_start_screen(window))
+    return Button(window, text="뒤로가기",bg = '#efc376', command=lambda: reset_to_start_screen(window))

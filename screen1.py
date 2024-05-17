@@ -8,9 +8,9 @@ def switch_to_screen_1(window, reset_to_start_screen):
     # 배경화면 설정
     set_background(window)
 
-    label = Label(window, text="첫 번째 화면", font=(font_name, 20), bg='white')
-    label.pack(pady=20)
+    label_topic = Label(window, text="공공기관 시설정보", font=(font_name, 30), bg='#efc376')
+    label_topic.place(x=50, y=50)
 
 
     back_button = create_back_button(window, reset_to_start_screen)
-    back_button.pack()
+    back_button.place(x=1100, y=50)

@@ -8,7 +8,7 @@ def switch_to_screen_2(window, reset_to_start_screen):
     # 배경화면 설정
     set_background(window)
 
-    label = Label(window, text="두 번째 화면", font=(font_name, 20), bg='white')
+    label = Label(window, text="두 번째 화면", font=(font_name, 20), bg='#efc376')
     label.pack(pady=20)
 
 
