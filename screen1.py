@@ -1,8 +1,8 @@
 from tkinter import *
-from assist import clear_window, create_back_button
+from assist import *
 def switch_to_screen_1(window, reset_to_start_screen):
     clear_window(window)
-    label = Label(window, text="첫 번째 화면", font=("Helvetica", 20))
+    label = Label(window, text="첫 번째 화면", font=(font_name, 20))
     label.pack(pady=20)
 
     # 여기에 첫 번째 화면의 다른 위젯을 추가하세요.
