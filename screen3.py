@@ -3,6 +3,8 @@ from assist import *
 
 def switch_to_screen_3(window, reset_to_start_screen):
     clear_window(window)
+    set_background(window, 'image/korean_book_background.png')
+
     label = Label(window, text="세 번째 화면", font=(font_name, 20))
     label.pack(pady=20)
 

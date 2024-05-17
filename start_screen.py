@@ -9,6 +9,8 @@ import os
 def create_start_screen(window):
     clear_window(window)
 
+    set_background(window, 'image/korean_book_background.png')
+
     OpenTopic = font.Font(window, size=70, family=font_name)
     MainTopic = font.Font(window, size=20, family=font_name)
 
