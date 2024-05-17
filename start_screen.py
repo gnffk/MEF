@@ -1,15 +1,19 @@
 from tkinter import *
 from tkinter import font
-from assist import clear_window, load_custom_font,create_back_button
+from assist import clear_window,create_back_button
 from screen1 import switch_to_screen_1
 from screen2 import switch_to_screen_2
 from screen3 import switch_to_screen_3
-
+import os
 
 def create_start_screen(window):
     clear_window(window)
-    OpenTopic = load_custom_font(size =50)
-    MainTopic = load_custom_font(size=20)
+
+
+    font_name = "충주김생체 TTF"
+
+    OpenTopic = font.Font(window, size=50, family=font_name)
+    MainTopic = font.Font(window, size=20, family=font_name)
 
     label = Label(window, text="MEF", font=OpenTopic)
     label.place(x=100, y=100)
