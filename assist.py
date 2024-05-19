@@ -50,9 +50,6 @@ def fetch_data_from_api(host, endpoint, params):
     # 응답을 받습니다.
     response = conn.getresponse()
 
-    # 상태와 이유를 출력합니다.
-    print(response.status, response.reason)
-
     # 응답 본문을 읽고 디코딩합니다.
     data = response.read().decode('utf-8')
 
