@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import font
+
 import os
 
 import urllib.parse
@@ -38,7 +39,6 @@ def create_back_button(window, reset_to_start_screen):
 
 # api 들고 오는 함수
 def fetch_data_from_api(host, endpoint, params):
-    # 파라미터를 인코딩합니다.
     query_string = urllib.parse.urlencode(params)
 
     # 연결을 만듭니다.
@@ -50,11 +50,39 @@ def fetch_data_from_api(host, endpoint, params):
     # 응답을 받습니다.
     response = conn.getresponse()
 
+    # 상태와 이유를 출력합니다.
+    print(response.status, response.reason)
+
     # 응답 본문을 읽고 디코딩합니다.
     data = response.read().decode('utf-8')
-
-    # 연결을 닫습니다.
     conn.close()
 
     # JSON 데이터로 변환하여 반환합니다.
-    return json.loads(data)
+    try:
+        json_data = json.loads(data)
+
+        # 원하는 데이터 필터링
+        filtered_data = []
+        if endpoint == "/1051000/public_inst/list":
+            items = json_data["result"]
+
+            for item in items:
+                filtered_data.append({
+                    "instCd": item.get("instCd"),
+                    "instNm": item.get("instNm"),
+                    "sprvsnInstCd": item.get("sprvsnInstCd"),
+                    "sprvsnInstNm": item.get("sprvsnInstNm"),
+                    "instType": item.get("instType"),
+                    "roadNmAddr": item.get("roadNmAddr"),
+                    "daddr": item.get("daddr"),
+                    "rprsTelno": item.get("rprsTelno"),
+                    "rprsEml": item.get("rprsEml"),
+                    "siteUrl": item.get("siteUrl"),
+                    "ctpvNm": item.get("ctpvNm"),
+                    "lotnoAddr": item.get("lotnoAddr")
+                })
+        return filtered_data
+    except json.JSONDecodeError as e:
+        print(f"JSONDecodeError: {e}")
+        return None
+
