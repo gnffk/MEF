@@ -72,6 +72,7 @@ def InitSearch(window):
 
 
 def search_data(window, query):
+    LoadopenAPI()  # 데이터 로드
     global data, filtered_data
     if data:
         filtered_data = [item for item in data if query.lower() in item['instNm'].lower()]
@@ -89,7 +90,7 @@ def switch_to_screen_1(window, reset_to_start_screen):
     clear_window(window)
     set_background(window)
 
-    LoadopenAPI()  # 데이터 로드
+
     InitLabel(window)  # 레이블 초기화
     InitButton(window, reset_to_start_screen)  # 버튼 초기화
     InitSearch(window)  # 검색 초기화
