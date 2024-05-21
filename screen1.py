@@ -1,60 +1,96 @@
 from tkinter import *
 from assist import *
 
-
 data = None
+filtered_data = None  # 필터링된 데이터를 저장할 변수
+
 
 def LoadopenAPI():
-    global data
+    global data, filtered_data
     if not data:
         host = "apis.data.go.kr"
         endpoint = "/1051000/public_inst/list"
         params = {
         "serviceKey": "GuwRZzKrYZA0iHG1Y%2BArdizUhu0a32Kym5AKO4tlpC71aaaCEI6YOzWIEfHyipefqThokj%2F9YurMG0WibwIfrA%3D%3D",
-        "pageNo": "1",
         "numOfRows": "366"
         }
         response = fetch_data_from_api(host, endpoint, params)
         if response and "result" in response:
             data = response["result"]
+            filtered_data = data  # 초기 필터링 데이터 설정
         else:
             data = None
+            filtered_data = None
 
 
 def InitScrollBar(window):
-    global data
+    global filtered_data
     listbox_frame = Frame(window)
     listbox_frame.place(x=50, y=300, width=500, height=400)
 
-    ListBoxScrollbar = Scrollbar(listbox_frame)
+    ListBoxScrollbar = Scrollbar(listbox_frame, bg='#efc376')
     ListBoxScrollbar.pack(side=RIGHT, fill=Y)
 
-    SearchListBox = Listbox(listbox_frame, yscrollcommand=ListBoxScrollbar.set)
+    SearchListBox = Listbox(listbox_frame,font=(font_name, 10), bg='#efc376', yscrollcommand=ListBoxScrollbar.set)
     SearchListBox.pack(side=LEFT, fill=BOTH, expand=True)
 
-    ListBoxScrollbar.config(command=SearchListBox.yview)
+    ListBoxScrollbar.config(command=SearchListBox.yview, bg='#efc376')
 
     # 데이터 로드
+    update_listbox(SearchListBox, filtered_data)
+
+
+def update_listbox(listbox, data):
+    listbox.delete(0, END)
     if data:
         for item in data:
-            SearchListBox.insert(END, f"{item['instNm']} - {item['roadNmAddr']}")
+            listbox.insert(END, f"{item['instNm']} - {item['roadNmAddr']}")
     else:
-        SearchListBox.insert(END, "데이터를 가져올 수 없습니다.")
+        listbox.insert(END, "데이터를 가져올 수 없습니다.")
+
 
 def InitLabel(window):
     label_topic = Label(window, text="공공기관 시설정보", font=(font_name, 30), bg='#efc376')
     label_topic.place(x=50, y=50)
 
+
 def InitButton(window, reset_to_start_screen):
     back_button = create_back_button(window, reset_to_start_screen)
     back_button.place(x=1100, y=50)
+
+
+def InitSearch(window):
+    search_label = Label(window, text="검색:", font=(font_name, 15), bg='#efc376')
+    search_label.place(x=50, y=250)
+
+    search_entry = Entry(window, font=(font_name, 15) ,bg='#efc376')
+    search_entry.place(x=100, y=250, width=380)
+
+    search_button = Button(window, text="검색", font=(font_name, 12), bg='#efc376',
+                           command=lambda: search_data(window, search_entry.get()))
+    search_button.place(x=500, y=250)
+
+
+def search_data(window, query):
+    global data, filtered_data
+    if data:
+        filtered_data = [item for item in data if query.lower() in item['instNm'].lower()]
+    else:
+        filtered_data = None
+    # 리스트박스를 업데이트하려면 현재 창의 리스트박스 객체를 찾아서 갱신
+    listbox_frame = window.children.get('!frame')  # listbox_frame
+    if listbox_frame:
+        search_listbox = listbox_frame.children.get('!listbox')  # SearchListBox
+        if search_listbox:
+            update_listbox(search_listbox, filtered_data)
+
 
 def switch_to_screen_1(window, reset_to_start_screen):
     clear_window(window)
     set_background(window)
 
-    LoadopenAPI()  # data 불러오는 함수
-    InitLabel(window)  # Label 정리
-    InitButton(window, reset_to_start_screen)  # Button 정리
-    InitScrollBar(window)  # ScrollBar 정리
-
+    LoadopenAPI()  # 데이터 로드
+    InitLabel(window)  # 레이블 초기화
+    InitButton(window, reset_to_start_screen)  # 버튼 초기화
+    InitSearch(window)  # 검색 초기화
+    InitScrollBar(window)  # 스크롤바 초기화
