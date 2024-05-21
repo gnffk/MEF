@@ -43,7 +43,6 @@ def fetch_data_from_api(host, endpoint, params):
     conn = http.client.HTTPConnection(host)
     conn.request("GET", f"{endpoint}?{query_string}")
     response = conn.getresponse()
-    print(response.status, response.reason)
     data = response.read().decode("utf-8")
     conn.close()
     if response.status == 200:
