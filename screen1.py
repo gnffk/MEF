@@ -7,20 +7,20 @@ search_listbox = None  # 전역 변수로 리스트 박스 참조
 
 def LoadopenAPI():
     global data, filtered_data
-    if not data:
-        host = "apis.data.go.kr"
-        endpoint = "/1051000/public_inst/list"
-        params = {
-            "serviceKey": "GuwRZzKrYZA0iHG1Y%2BArdizUhu0a32Kym5AKO4tlpC71aaaCEI6YOzWIEfHyipefqThokj%2F9YurMG0WibwIfrA%3D%3D",
+
+    host = "apis.data.go.kr"
+    endpoint = "/1051000/public_inst/list"
+    params = {
+            "serviceKey": "GuwRZzKrYZA0iHG1Y+ArdizUhu0a32Kym5AKO4tlpC71aaaCEI6YOzWIEfHyipefqThokj/9YurMG0WibwIfrA==",
             "numOfRows": "366"
-        }
-        response = fetch_data_from_api(host, endpoint, params)
-        if response and "result" in response:
-            data = response["result"]
-            filtered_data = data  # 초기 필터링 데이터 설정
-        else:
-            data = None
-            filtered_data = None
+    }
+    response = fetch_data_from_api(host, endpoint, params)
+    if response and "result" in response:
+        data = response["result"]
+        filtered_data = data  # 초기 필터링 데이터 설정
+    else:
+        data = None
+        filtered_data = None
 
 
 def InitScrollBar(window):
@@ -45,7 +45,7 @@ def update_listbox(listbox, data):
         for item in data:
             listbox.insert(END, f"{item['instNm']} - {item['roadNmAddr']}")
     else:
-        listbox.insert(END, "데이터를 가져올 수 없습니다.")
+        listbox.insert(END, "없음")
 
 
 def InitLabel(window):
