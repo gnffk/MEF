@@ -6,14 +6,19 @@ data = None
 
 def LoadopenAPI():
     global data
-    host = "apis.data.go.kr"
-    endpoint = "/1051000/public_inst/list"
-    params = {
-            "serviceKey": "GuwRZzKrYZA0iHG1Y%2BArdizUhu0a32Kym5AKO4tlpC71aaaCEI6YOzWIEfHyipefqThokj%2F9YurMG0WibwIfrA%3D%3D",
-            "pageNo": "1",
-            "numOfRows": "366"
-    }
-    data = fetch_data_from_api(host, endpoint, params)
+    if not data:
+        host = "apis.data.go.kr"
+        endpoint = "/1051000/public_inst/list"
+        params = {
+        "serviceKey": "GuwRZzKrYZA0iHG1Y%2BArdizUhu0a32Kym5AKO4tlpC71aaaCEI6YOzWIEfHyipefqThokj%2F9YurMG0WibwIfrA%3D%3D",
+        "pageNo": "1",
+        "numOfRows": "366"
+        }
+        response = fetch_data_from_api(host, endpoint, params)
+        if response and "result" in response:
+            data = response["result"]
+        else:
+            data = None
 
 
 def InitScrollBar(window):
