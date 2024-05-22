@@ -25,7 +25,7 @@ def LoadopenAPI():
 def InitScrollBar(window):
     global filtered_data, search_listbox
     listbox_frame = Frame(window)
-    listbox_frame.place(x=50, y=300, width=500, height=400)
+    listbox_frame.place(x=50, y=200, width=500, height=500)
 
     ListBoxScrollbar = Scrollbar(listbox_frame)
     ListBoxScrollbar.pack(side=RIGHT, fill=Y)
@@ -56,7 +56,7 @@ def update_listbox(listbox, data):
     listbox.delete(0, END)
     if data:
         for item in data:
-            listbox.insert(END, f"{item['instNm']} - {item['roadNmAddr']}")
+            listbox.insert(END, f"{item['instNm']} - {item['sprvsnInstNm']}")
     else:
         listbox.insert(END, "없음")
 
@@ -70,14 +70,14 @@ def InitButton(window, reset_to_start_screen):
 
 def InitSearch(window):
     search_label = Label(window, text="검색:", font=(font_name, 15), bg='#efc376')
-    search_label.place(x=50, y=250)
+    search_label.place(x=50, y=150)
 
     search_entry = Entry(window, font=(font_name, 15), bg='#efc376')
-    search_entry.place(x=100, y=250, width=380)
+    search_entry.place(x=100, y=150, width=380)
 
     search_button = Button(window, text="검색", font=(font_name, 12), bg='#efc376',
                            command=lambda: search_data(search_entry.get()))
-    search_button.place(x=500, y=250)
+    search_button.place(x=500, y=150)
 
 def search_data(query):
     global data, filtered_data, search_listbox
@@ -97,13 +97,16 @@ def display_info(event):
         index = selection[0]
         selected_item = filtered_data[index]
         info = f"기관명: {selected_item['instNm']}\n" \
-               f"분류: {selected_item['sprvsnInstNm']}\n" \
+               f"부서: {selected_item['sprvsnInstNm']}\n" \
                f"홈페이지: {selected_item['siteUrl']}\n" \
                f"전화번호: {selected_item['rprsTelno']}\n" \
                f"도로명 주소: {selected_item['roadNmAddr']}\n" \
                f"지번 주소: {selected_item['lotnoAddr']}"
+        x, y = request_geo(selected_item['roadNmAddr'])
+        infobox_text.config(state=NORMAL)
         infobox_text.delete(1.0, END)
         infobox_text.insert(END, info)
+        infobox_text.config(state=DISABLED)
 
 def switch_to_screen_1(window, reset_to_start_screen):
     clear_window(window)
