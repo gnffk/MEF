@@ -1,5 +1,11 @@
 from assist import *
 
+
+from PIL import Image, ImageTk
+from tkinterweb import HtmlFrame
+import folium
+
+
 data = None
 filtered_data = None  # 필터링된 데이터를 저장할 변수
 search_listbox = None  # 전역 변수로 리스트 박스 참조
@@ -25,7 +31,7 @@ def LoadopenAPI():
 def InitScrollBar(window):
     global filtered_data, search_listbox
     listbox_frame = Frame(window)
-    listbox_frame.place(x=50, y=300, width=500, height=400)
+    listbox_frame.place(x=50, y=200, width=500, height=500)
 
     ListBoxScrollbar = Scrollbar(listbox_frame)
     ListBoxScrollbar.pack(side=RIGHT, fill=Y)
@@ -42,7 +48,7 @@ def InitScrollBar(window):
 def InitInfo(window):
     global infobox_text
     InfoBox_frame = Frame(window)
-    InfoBox_frame.place(x=600, y=200, width=500, height=500)
+    InfoBox_frame.place(x=600, y=200, width=500, height=100)
 
     InfoBox_Scrollbar = Scrollbar(InfoBox_frame, bg='#efc376')
     InfoBox_Scrollbar.pack(side=RIGHT, fill=Y)
@@ -51,12 +57,21 @@ def InitInfo(window):
     infobox_text.pack(side=LEFT, fill=BOTH, expand=True)
 
     InfoBox_Scrollbar.config(command=infobox_text.yview, bg='#efc376')
-
+def InitMap(window):
+    global map_frame
+    map_frame = HtmlFrame(window, horizontal_scrollbar="auto", messages_enabled=True)
+    map_frame.place(x=600, y=320, width=500, height=380)
+def update_map(a, b):
+    map = folium.Map(location=[int(a),int(b)], zoom_start=15)
+    marker = folium.Marker([a, b])
+    marker.add_to(map)
+    map.save("map/map.html")
+    map_frame.load_file("map/map.html")
 def update_listbox(listbox, data):
     listbox.delete(0, END)
     if data:
         for item in data:
-            listbox.insert(END, f"{item['instNm']} - {item['roadNmAddr']}")
+            listbox.insert(END, f"{item['instNm']} - {item['sprvsnInstNm']}")
     else:
         listbox.insert(END, "없음")
 
@@ -70,14 +85,14 @@ def InitButton(window, reset_to_start_screen):
 
 def InitSearch(window):
     search_label = Label(window, text="검색:", font=(font_name, 15), bg='#efc376')
-    search_label.place(x=50, y=250)
+    search_label.place(x=50, y=150)
 
     search_entry = Entry(window, font=(font_name, 15), bg='#efc376')
-    search_entry.place(x=100, y=250, width=380)
+    search_entry.place(x=100, y=150, width=380)
 
     search_button = Button(window, text="검색", font=(font_name, 12), bg='#efc376',
                            command=lambda: search_data(search_entry.get()))
-    search_button.place(x=500, y=250)
+    search_button.place(x=500, y=150)
 
 def search_data(query):
     global data, filtered_data, search_listbox
@@ -97,13 +112,27 @@ def display_info(event):
         index = selection[0]
         selected_item = filtered_data[index]
         info = f"기관명: {selected_item['instNm']}\n" \
-               f"분류: {selected_item['sprvsnInstNm']}\n" \
+               f"부서: {selected_item['sprvsnInstNm']}\n" \
                f"홈페이지: {selected_item['siteUrl']}\n" \
                f"전화번호: {selected_item['rprsTelno']}\n" \
                f"도로명 주소: {selected_item['roadNmAddr']}\n" \
                f"지번 주소: {selected_item['lotnoAddr']}"
+        x, y = request_geo(selected_item['roadNmAddr'])
+        update_map(y,x)
+
+        infobox_text.config(state=NORMAL)
         infobox_text.delete(1.0, END)
         infobox_text.insert(END, info)
+        infobox_text.config(state=DISABLED)
+def reset_to_start_screen(window):
+    global filtered_data
+    filtered_data = data  # 초기 필터링 데이터 설정
+    clear_window(window)
+    create_start_screen(window)  # 시작 화면을 다시 설정
+
+def create_start_screen(window):
+    clear_window(window)
+    set_background(window)
 
 def switch_to_screen_1(window, reset_to_start_screen):
     clear_window(window)
@@ -114,13 +143,5 @@ def switch_to_screen_1(window, reset_to_start_screen):
     InitSearch(window)  # 검색 초기화
     InitScrollBar(window)  # 스크롤바 초기화
     InitInfo(window)  # InfoBox 초기화
+    InitMap(window) # map 초기화
 
-def reset_to_start_screen(window):
-    global filtered_data
-    filtered_data = data  # 초기 필터링 데이터 설정
-    clear_window(window)
-    create_start_screen(window)  # 시작 화면을 다시 설정
-
-def create_start_screen(window):
-    clear_window(window)
-    set_background(window)

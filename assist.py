@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter import font
-
+import requests
 import os
 
 import urllib.parse
@@ -37,6 +37,23 @@ def clear_window(window):
 def create_back_button(window, reset_to_start_screen):
     return Button(window, text="뒤로가기",bg = '#efc376', command=lambda: reset_to_start_screen(window))
 
+def request_geo(road):
+    url = 'http://api.vworld.kr/req/address?'
+    params = 'service=address&request=getcoord&version=2.0&crs=epsg:4326&refine=true&simple=false&format=json&type='
+    road_type = 'ROAD'
+    address = '&address='
+    keys = '&key='
+    primary_key = '4B834672-25F1-3943-972F-98B6E0E5E93A'
+    page = requests.get(url+params+road_type+address+road+keys+primary_key)
+    json_data = page.json()
+    if json_data['response']['status'] == 'OK':
+        x = json_data['response']['result']['point']['x']
+        y = json_data['response']['result']['point']['y']
+        return float(x), float(y)
+    else:
+        x = 0
+        y = 0
+        return x, y
 # api 들고 오는 함수
 def fetch_data_from_api(host, endpoint, params):
     query_string = urllib.parse.urlencode(params)
