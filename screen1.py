@@ -59,7 +59,7 @@ def InitInfo(window):
     InfoBox_Scrollbar.config(command=infobox_text.yview, bg='#efc376')
 def InitMap(window):
     global map_frame
-    map_frame = HtmlFrame(window, horizontal_scrollbar="auto")
+    map_frame = HtmlFrame(window, horizontal_scrollbar="auto", messages_enabled=False)
     map_frame.place(x=600, y=320, width=500, height=380)
 def update_map(x, y):
     map = folium.Map(location=[x,y], zoom_start=15)
@@ -122,7 +122,15 @@ def display_info(event):
         infobox_text.delete(1.0, END)
         infobox_text.insert(END, info)
         infobox_text.config(state=DISABLED)
+def reset_to_start_screen(window):
+    global filtered_data
+    filtered_data = data  # 초기 필터링 데이터 설정
+    clear_window(window)
+    create_start_screen(window)  # 시작 화면을 다시 설정
 
+def create_start_screen(window):
+    clear_window(window)
+    set_background(window)
 
 def switch_to_screen_1(window, reset_to_start_screen):
     clear_window(window)
@@ -134,12 +142,4 @@ def switch_to_screen_1(window, reset_to_start_screen):
     InitScrollBar(window)  # 스크롤바 초기화
     InitInfo(window)  # InfoBox 초기화
     InitMap(window) # map 초기화
-def reset_to_start_screen(window):
-    global filtered_data
-    filtered_data = data  # 초기 필터링 데이터 설정
-    clear_window(window)
-    create_start_screen(window)  # 시작 화면을 다시 설정
 
-def create_start_screen(window):
-    clear_window(window)
-    set_background(window)
