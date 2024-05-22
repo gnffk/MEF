@@ -1,4 +1,3 @@
-from tkinter import *
 from assist import *
 
 def InitScrollBar(window):
