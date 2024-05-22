@@ -1,5 +1,11 @@
 from assist import *
 
+
+from PIL import Image, ImageTk
+from tkinterweb import HtmlFrame
+import folium
+
+
 data = None
 filtered_data = None  # 필터링된 데이터를 저장할 변수
 search_listbox = None  # 전역 변수로 리스트 박스 참조
@@ -42,7 +48,7 @@ def InitScrollBar(window):
 def InitInfo(window):
     global infobox_text
     InfoBox_frame = Frame(window)
-    InfoBox_frame.place(x=600, y=200, width=500, height=500)
+    InfoBox_frame.place(x=600, y=200, width=500, height=100)
 
     InfoBox_Scrollbar = Scrollbar(InfoBox_frame, bg='#efc376')
     InfoBox_Scrollbar.pack(side=RIGHT, fill=Y)
@@ -51,7 +57,15 @@ def InitInfo(window):
     infobox_text.pack(side=LEFT, fill=BOTH, expand=True)
 
     InfoBox_Scrollbar.config(command=infobox_text.yview, bg='#efc376')
-
+def InitMap(window):
+    global map_frame
+    map_frame = HtmlFrame(window, horizontal_scrollbar="auto")
+    map_frame.place(x=600, y=320, width=500, height=380)
+def update_map(x, y):
+    map = folium.Map(location=[x,y], zoom_start=15)
+    marker = folium.Marker([x, y])
+    marker.add_to(map)
+    map.save("map/map.html")
 def update_listbox(listbox, data):
     listbox.delete(0, END)
     if data:
@@ -103,10 +117,12 @@ def display_info(event):
                f"도로명 주소: {selected_item['roadNmAddr']}\n" \
                f"지번 주소: {selected_item['lotnoAddr']}"
         x, y = request_geo(selected_item['roadNmAddr'])
+        update_map(x,y)
         infobox_text.config(state=NORMAL)
         infobox_text.delete(1.0, END)
         infobox_text.insert(END, info)
         infobox_text.config(state=DISABLED)
+
 
 def switch_to_screen_1(window, reset_to_start_screen):
     clear_window(window)
@@ -117,7 +133,7 @@ def switch_to_screen_1(window, reset_to_start_screen):
     InitSearch(window)  # 검색 초기화
     InitScrollBar(window)  # 스크롤바 초기화
     InitInfo(window)  # InfoBox 초기화
-
+    InitMap(window) # map 초기화
 def reset_to_start_screen(window):
     global filtered_data
     filtered_data = data  # 초기 필터링 데이터 설정
