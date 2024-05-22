@@ -59,13 +59,14 @@ def InitInfo(window):
     InfoBox_Scrollbar.config(command=infobox_text.yview, bg='#efc376')
 def InitMap(window):
     global map_frame
-    map_frame = HtmlFrame(window, horizontal_scrollbar="auto", messages_enabled=False)
+    map_frame = HtmlFrame(window, horizontal_scrollbar="auto", messages_enabled=True)
     map_frame.place(x=600, y=320, width=500, height=380)
-def update_map(x, y):
-    map = folium.Map(location=[x,y], zoom_start=15)
-    marker = folium.Marker([x, y])
+def update_map(a, b):
+    map = folium.Map(location=[int(a),int(b)], zoom_start=15)
+    marker = folium.Marker([a, b])
     marker.add_to(map)
     map.save("map/map.html")
+    map_frame.load_file("map/map.html")
 def update_listbox(listbox, data):
     listbox.delete(0, END)
     if data:
@@ -117,7 +118,8 @@ def display_info(event):
                f"도로명 주소: {selected_item['roadNmAddr']}\n" \
                f"지번 주소: {selected_item['lotnoAddr']}"
         x, y = request_geo(selected_item['roadNmAddr'])
-        update_map(x,y)
+        update_map(y,x)
+
         infobox_text.config(state=NORMAL)
         infobox_text.delete(1.0, END)
         infobox_text.insert(END, info)

@@ -49,7 +49,7 @@ def request_geo(road):
     if json_data['response']['status'] == 'OK':
         x = json_data['response']['result']['point']['x']
         y = json_data['response']['result']['point']['y']
-        return x, y
+        return float(x), float(y)
     else:
         x = 0
         y = 0
