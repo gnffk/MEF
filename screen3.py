@@ -155,7 +155,7 @@ NCS 코드명: {item.get('ncsCdNmLst', '없음')}
 
     # 결격사유 프레임
     disqualification_frame = Frame(window, bg='#efc376')
-    disqualification_frame.place(x=575, y=600, width=500, height=100)
+    disqualification_frame.place(x=575, y=600, width=500, height=150)
 
     disqualification_text = Text(disqualification_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
     disqualification_text.pack(side=LEFT, fill=BOTH, expand=True)
@@ -219,7 +219,7 @@ def InitEmptyFrames(window):
 
     # 결격사유 프레임
     window.disqualification_frame = Frame(window, bg='#efc376')
-    window.disqualification_frame.place(x=575, y=600, width=500, height=100)
+    window.disqualification_frame.place(x=575, y=600, width=500, height=150)
 
     window.disqualification_text = Text(window.disqualification_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
     window.disqualification_text.pack(side=LEFT, fill=BOTH, expand=True)
