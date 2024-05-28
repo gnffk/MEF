@@ -1,19 +1,20 @@
+import os
+from tkinter import *
 from assist import *
-
-
 from PIL import Image, ImageTk
-from tkinterweb import HtmlFrame
-import folium
-
 
 data = None
 filtered_data = None  # 필터링된 데이터를 저장할 변수
 search_listbox = None  # 전역 변수로 리스트 박스 참조
 infobox_text = None  # InfoBox의 텍스트 위젯 참조
+map_label = None  # Map Label 참조
+google_maps_api_key = 'AIzaSyDbSUl8RcidvuEFE9r9KER3hU-j2yA0OSw'  # 여기에 Google Maps API 키를 입력하세요
+current_lat = None
+current_lng = None
+current_zoom = 15  # 기본 줌 레벨
 
 def LoadopenAPI():
     global data, filtered_data
-
     host = "apis.data.go.kr"
     endpoint = "/1051000/public_inst/list"
     params = {
@@ -57,16 +58,28 @@ def InitInfo(window):
     infobox_text.pack(side=LEFT, fill=BOTH, expand=True)
 
     InfoBox_Scrollbar.config(command=infobox_text.yview, bg='#efc376')
+
 def InitMap(window):
-    global map_frame
-    map_frame = HtmlFrame(window, horizontal_scrollbar="auto", messages_enabled=True)
-    map_frame.place(x=600, y=320, width=500, height=380)
-def update_map(a, b):
-    map = folium.Map(location=[int(a),int(b)], zoom_start=15)
-    marker = folium.Marker([a, b])
-    marker.add_to(map)
-    map.save("map/map.html")
-    map_frame.load_file("map/map.html")
+    global map_label, name_label
+    map_label = Label(window, bg='#efc376')
+    map_label.place(x=600, y=310, width=500, height=390)
+    name_label = Label(window, font=(font_name, 15), bg='#efc376')
+    name_label.place(x=600, y=700, width=500, height=30)
+
+    zoom_in_button = Button(window, text="+", font=(font_name, 12), bg='#efc376', command=zoom_in)
+    zoom_in_button.place(x=1050, y=310, width=50, height=30)
+
+    zoom_out_button = Button(window, text="-", font=(font_name, 12), bg='#efc376', command=zoom_out)
+    zoom_out_button.place(x=1050, y=350, width=50, height=30)
+
+def update_map(lat, lng, name, zoom):
+    global map_label, name_label, google_maps_api_key
+    map_image = get_static_map_image(lat, lng, google_maps_api_key, zoom=zoom)
+    if map_image:
+        map_label.config(image=map_image)
+        map_label.image = map_image  # 이미지 객체를 유지
+        name_label.config(text=name)
+
 def update_listbox(listbox, data):
     listbox.delete(0, END)
     if data:
@@ -106,7 +119,7 @@ def search_data(query):
         update_listbox(search_listbox, filtered_data)
 
 def display_info(event):
-    global filtered_data, search_listbox, infobox_text
+    global filtered_data, search_listbox, infobox_text, current_lat, current_lng, current_zoom
     selection = search_listbox.curselection()
     if selection:
         index = selection[0]
@@ -117,13 +130,27 @@ def display_info(event):
                f"전화번호: {selected_item['rprsTelno']}\n" \
                f"도로명 주소: {selected_item['roadNmAddr']}\n" \
                f"지번 주소: {selected_item['lotnoAddr']}"
-        x, y = request_geo(selected_item['roadNmAddr'])
-        update_map(y,x)
+        current_lat, current_lng = request_geo(selected_item['roadNmAddr'])
+        current_zoom = 15  # 기본 줌 레벨로 초기화
+        update_map(current_lat, current_lng, selected_item['instNm'], current_zoom)
 
         infobox_text.config(state=NORMAL)
         infobox_text.delete(1.0, END)
         infobox_text.insert(END, info)
         infobox_text.config(state=DISABLED)
+
+def zoom_in():
+    global current_zoom
+    if current_zoom < 21:  # 최대 줌 레벨
+        current_zoom += 1
+        update_map(current_lat, current_lng, name_label.cget("text"), current_zoom)
+
+def zoom_out():
+    global current_zoom
+    if current_zoom > 0:  # 최소 줌 레벨
+        current_zoom -= 1
+        update_map(current_lat, current_lng, name_label.cget("text"), current_zoom)
+
 def reset_to_start_screen(window):
     global filtered_data
     filtered_data = data  # 초기 필터링 데이터 설정
@@ -144,4 +171,3 @@ def switch_to_screen_1(window, reset_to_start_screen):
     InitScrollBar(window)  # 스크롤바 초기화
     InitInfo(window)  # InfoBox 초기화
     InitMap(window) # map 초기화
-
