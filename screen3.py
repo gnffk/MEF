@@ -6,23 +6,6 @@ import json
 data = None
 filtered_data = None
 
-def fetch_data_from_api(host, endpoint, params):
-    import http.client
-    import urllib.parse
-
-    query_string = urllib.parse.urlencode(params)
-    conn = http.client.HTTPConnection(host)
-    conn.request("GET", f"{endpoint}?{query_string}")
-    response = conn.getresponse()
-
-    if response.status == 200:
-        data = response.read().decode("utf-8")
-        conn.close()
-        return json.loads(data)
-    else:
-        conn.close()
-        return None
-
 def LoadopenAPI(search_category=None, search_query=None):
     global data, filtered_data
     host = "apis.data.go.kr"
