@@ -1,8 +1,6 @@
 import json
 from tkinter import *
 from assist import *
-import urllib.parse
-import http.client
 
 # 사업 분야(대)와 중분류 목록
 categories = {
@@ -22,6 +20,7 @@ categories = {
 
 data = None
 filtered_data = None
+selected_item = None  # 전역 변수로 선택한 아이템 저장
 
 
 def LoadopenAPI(bizClsf=None):
@@ -57,27 +56,7 @@ def LoadopenAPI(bizClsf=None):
     else:
         data = None
         filtered_data = None
-        print("관련 데이터가 없습니다.")
-
-
-def fetch_data_from_api(host, endpoint, params):
-    query_string = urllib.parse.urlencode(params)
-    conn = http.client.HTTPConnection(host)
-    conn.request("GET", f"{endpoint}?{query_string}")
-    response = conn.getresponse()
-
-    data = response.read().decode("utf-8")
-    conn.close()
-    if response.status == 200:
-        try:
-            json_data = json.loads(data)
-            return json_data
-        except json.JSONDecodeError as e:
-            print(f"JSONDecodeError: {e}")
-            return None
-    else:
-        print(f"HTTP Error: {response.status} {response.reason}")
-        return None
+        print("데이터를 불러올 수 없습니다.")
 
 
 def InitLabel(window):
@@ -142,6 +121,7 @@ def select_subcategory(window, subcategory):
 
     listbox = Listbox(window.listbox_frame, font=(font_name, 10), bg='#efc376', yscrollcommand=listbox_scrollbar.set)
     listbox.pack(side=LEFT, fill=BOTH, expand=True)
+    listbox.bind('<<ListboxSelect>>', lambda event: on_select(event, window))
 
     listbox_scrollbar.config(command=listbox.yview)
 
@@ -156,14 +136,14 @@ def update_listbox(listbox, subcategory_code):
             filtered_items = [item for item in filtered_data if item.get('bizClsf') is None]
         else:
             filtered_items = [item for item in filtered_data if subcategory_code == "B0" or (
-                        item.get('bizClsf') and item['bizClsf'].startswith(subcategory_code))]
+                    item.get('bizClsf') and item['bizClsf'].startswith(subcategory_code))]
         if filtered_items:
             for item in filtered_items:
                 listbox.insert(END, f"{item['bizNm']}")
         else:
             listbox.insert(END, "관련 데이터가 없습니다.")
     else:
-        listbox.insert(END, "관련 데이터가 없습니다.")
+        listbox.insert(END, "데이터를 불러올 수 없습니다.")
 
 
 def InitSearch(window):
@@ -180,10 +160,11 @@ def InitSearch(window):
 
 def search_data(window, query):
     global filtered_data
-    if data:
-        filtered_data = [item for item in data if query.lower() in item['bizNm'].lower()]
+    if filtered_data:
+        filtered_items = [item for item in filtered_data if query.lower() in item['bizNm'].lower()]
     else:
-        filtered_data = None
+        filtered_items = []
+
     if hasattr(window, 'listbox_frame'):
         window.listbox_frame.destroy()
 
@@ -195,6 +176,7 @@ def search_data(window, query):
 
     listbox = Listbox(window.listbox_frame, font=(font_name, 10), bg='#efc376', yscrollcommand=listbox_scrollbar.set)
     listbox.pack(side=LEFT, fill=BOTH, expand=True)
+    listbox.bind('<<ListboxSelect>>', lambda event: on_select(event, window))
 
     listbox_scrollbar.config(command=listbox.yview)
 
@@ -212,7 +194,76 @@ def update_listbox_search(listbox, query):
         else:
             listbox.insert(END, "관련 데이터가 없습니다.")
     else:
-        listbox.insert(END, "관련 데이터가 없습니다.")
+        listbox.insert(END, "데이터를 불러올 수 없습니다.")
+
+
+def on_select(event, window):
+    global selected_item
+    widget = event.widget
+    selection = widget.curselection()
+    if selection:
+        index = selection[0]
+        selected_item = filtered_data[index]
+        display_details(window)
+
+
+def display_details(window):
+    global selected_item
+    if selected_item:
+        # 상세 정보 프레임
+        details_frame = Frame(window, bg='#efc376')
+        details_frame.place(x=600, y=100, width=500, height=300)
+
+        details_text = Text(details_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
+        details_text.pack(side=LEFT, fill=BOTH, expand=True)
+
+        details_scrollbar = Scrollbar(details_frame, command=details_text.yview)
+        details_scrollbar.pack(side=RIGHT, fill=Y)
+
+        details_text.config(yscrollcommand=details_scrollbar.set)
+
+        details_text.delete(1.0, END)  # 기존 내용을 지우고 새로운 내용을 추가합니다.
+
+        details = f"""
+사업명: {selected_item['bizNm']}
+기관명: {selected_item['instNm']}
+사업분류: {selected_item['bizClsfNm']}
+사업기간: {selected_item['bizPeriodSeNm']}
+문의정보: {selected_item['utztnInqInfo']}
+홈페이지: {selected_item['siteUrl'] if selected_item['siteUrl'] else '없음'}
+생애주기: {selected_item['lifecyclNmLst'] if selected_item['lifecyclNmLst'] else '없음'}
+        """
+        details_text.insert(END, details)
+
+        # 사업 설명 프레임
+        biz_expln_frame = Frame(window, bg='#efc376')
+        biz_expln_frame.place(x=600, y=400, width=500, height=150)
+
+        biz_expln_text = Text(biz_expln_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
+        biz_expln_text.pack(side=LEFT, fill=BOTH, expand=True)
+
+        biz_expln_scrollbar = Scrollbar(biz_expln_frame, command=biz_expln_text.yview)
+        biz_expln_scrollbar.pack(side=RIGHT, fill=Y)
+
+        biz_expln_text.config(yscrollcommand=biz_expln_scrollbar.set)
+
+        biz_expln_text.delete(1.0, END)
+        biz_expln_text.insert(END, f"사업설명: \n{selected_item['bizExpln']}")
+
+        # 대상자 설명 프레임
+        target_expln_frame = Frame(window, bg='#efc376')
+        target_expln_frame.place(x=600, y=550, width=500, height=150)
+
+        target_expln_text = Text(target_expln_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
+        target_expln_text.pack(side=LEFT, fill=BOTH, expand=True)
+
+        target_expln_scrollbar = Scrollbar(target_expln_frame, command=target_expln_text.yview)
+        target_expln_scrollbar.pack(side=RIGHT, fill=Y)
+
+        target_expln_text.config(yscrollcommand=target_expln_scrollbar.set)
+
+        target_expln_text.delete(1.0, END)
+        target_expln_text.insert(END, f"대상자설명: \n{selected_item['utztnTrgtExpln']}")
 
 
 def InitButton(window, reset_to_start_screen):

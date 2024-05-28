@@ -59,11 +59,45 @@ def request_geo(road):
 def fetch_data_from_api(host, endpoint, params):
     query_string = urllib.parse.urlencode(params)
     conn = http.client.HTTPConnection(host)
-    conn.request("GET", f"{endpoint}?{query_string}")
+    headers = {
+        "Accept": "application/json"
+    }
+    conn.request("GET", f"{endpoint}?{query_string}", headers=headers)
     response = conn.getresponse()
 
     data = response.read().decode("utf-8")
     conn.close()
+    if response.status == 200:
+        try:
+            json_data = json.loads(data)
+            return json_data
+        except json.JSONDecodeError as e:
+            print(f"JSONDecodeError: {e}")
+            return None
+    else:
+        print(f"HTTP Error: {response.status} {response.reason}")
+        return None
+
+def fetch_data_from_api_post(host, endpoint, params, headers=None):
+    query_string = urllib.parse.urlencode(params)
+    conn = http.client.HTTPConnection(host)
+    if headers is None:
+        headers = {
+            "Content-Type": "application/x-www-form-urlencoded",
+            "Accept": "application/json",
+            "User-Agent": "Mozilla/5.0"
+        }
+    conn.request("POST", endpoint, query_string, headers)
+    response = conn.getresponse()
+
+    data = response.read().decode("utf-8")
+    conn.close()
+
+    print(f"Request URL: {host}{endpoint}")
+    print(f"Request Body: {query_string}")
+    print(f"Response Status: {response.status}, Reason: {response.reason}")
+    print(f"Response Data: {data}")
+
     if response.status == 200:
         try:
             json_data = json.loads(data)
