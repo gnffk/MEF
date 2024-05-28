@@ -2,7 +2,8 @@ from tkinter import *
 from tkinter import font
 import requests
 import os
-
+from io import BytesIO
+from PIL import Image, ImageTk
 import urllib.parse
 import http.client
 import json
@@ -49,11 +50,11 @@ def request_geo(road):
     if json_data['response']['status'] == 'OK':
         x = json_data['response']['result']['point']['x']
         y = json_data['response']['result']['point']['y']
-        return float(x), float(y)
+        return float(y), float(x)
     else:
         x = 0
         y = 0
-        return x, y
+        return y, x
 # api 들고 오는 함수
 def fetch_data_from_api(host, endpoint, params):
     query_string = urllib.parse.urlencode(params)
@@ -72,4 +73,22 @@ def fetch_data_from_api(host, endpoint, params):
             return None
     else:
         print(f"HTTP Error: {response.status} {response.reason}")
+        return None
+
+def get_static_map_image(lat, lng, api_key, zoom=15, size=(400, 400)):
+    base_url = "https://maps.googleapis.com/maps/api/staticmap?"
+    params = {
+        "center": f"{lat},{lng}",
+        "zoom": zoom,
+        "size": f"{size[0]}x{size[1]}",
+        "key": api_key,
+        "markers": f"color:red|{lat},{lng}"
+    }
+    response = requests.get(base_url, params=params)
+    if response.status_code == 200:
+        image_data = response.content
+        image = Image.open(BytesIO(image_data))
+        return ImageTk.PhotoImage(image)
+    else:
+        print(f"Error: {response.status_code} - {response.reason}")
         return None
