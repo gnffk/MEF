@@ -120,8 +120,7 @@ def display_details(window, item):
 
     details_text.delete(1.0, END)
 
-    details = f"""
-기관명: {item['instNm']}
+    details = f"""기관명: {item['instNm']}
 공시제목: {item['recrutPbancTtl']}
 NCS 코드명: {item.get('ncsCdNmLst', '없음')}
 고용형태: {item.get('hireTypeNmLst', '없음')}
@@ -179,42 +178,57 @@ def InitButton(window, reset_to_start_screen):
 
 def InitEmptyFrames(window):
     # 기본 빈 프레임들을 초기화
-    details_frame = Frame(window, bg='#efc376')
-    details_frame.place(x=575, y=50, width=500, height=300)
+    window.listbox_frame = Frame(window, bg='#efc376')
+    window.listbox_frame.place(x=50, y=250, width=500, height=500)
 
-    details_text = Text(details_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
-    details_text.pack(side=LEFT, fill=BOTH, expand=True)
+    window.listbox_scrollbar = Scrollbar(window.listbox_frame, bg='#efc376')
+    window.listbox_scrollbar.pack(side=RIGHT, fill=Y)
 
-    details_scrollbar = Scrollbar(details_frame, command=details_text.yview)
-    details_scrollbar.pack(side=RIGHT, fill=Y)
+    window.listbox = Listbox(window.listbox_frame, font=(font_name, 10), bg='#efc376', yscrollcommand=window.listbox_scrollbar.set)
+    window.listbox.pack(side=LEFT, fill=BOTH, expand=True)
+    window.listbox.bind('<<ListboxSelect>>', lambda event: on_select(event, window))
 
-    details_text.config(yscrollcommand=details_scrollbar.set)
+    window.listbox_scrollbar.config(command=window.listbox.yview)
+
+
+    # 상세 정보 프레임
+    window.details_frame = Frame(window, bg='#efc376')
+    window.details_frame.place(x=575, y=50, width=500, height=300)
+
+    window.details_text = Text(window.details_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
+    window.details_text.pack(side=LEFT, fill=BOTH, expand=True)
+
+    window.details_scrollbar = Scrollbar(window.details_frame, command=window.details_text.yview)
+    window.details_scrollbar.pack(side=RIGHT, fill=Y)
+
+    window.details_text.config(yscrollcommand=window.details_scrollbar.set)
 
 
     # 전형절차 및 방법 프레임
-    procedure_frame = Frame(window, bg='#efc376')
-    procedure_frame.place(x=575, y=370, width=500, height=200)
+    window.procedure_frame = Frame(window, bg='#efc376')
+    window.procedure_frame.place(x=575, y=370, width=500, height=200)
 
-    procedure_text = Text(procedure_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
-    procedure_text.pack(side=LEFT, fill=BOTH, expand=True)
+    window.procedure_text = Text(window.procedure_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
+    window.procedure_text.pack(side=LEFT, fill=BOTH, expand=True)
 
-    procedure_scrollbar = Scrollbar(procedure_frame, command=procedure_text.yview)
-    procedure_scrollbar.pack(side=RIGHT, fill=Y)
+    window.procedure_scrollbar = Scrollbar(window.procedure_frame, command=window.procedure_text.yview)
+    window.procedure_scrollbar.pack(side=RIGHT, fill=Y)
 
-    procedure_text.config(yscrollcommand=procedure_scrollbar.set)
+    window.procedure_text.config(yscrollcommand=window.procedure_scrollbar.set)
 
 
     # 결격사유 프레임
-    disqualification_frame = Frame(window, bg='#efc376')
-    disqualification_frame.place(x=575, y=600, width=500, height=100)
+    window.disqualification_frame = Frame(window, bg='#efc376')
+    window.disqualification_frame.place(x=575, y=600, width=500, height=100)
 
-    disqualification_text = Text(disqualification_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
-    disqualification_text.pack(side=LEFT, fill=BOTH, expand=True)
+    window.disqualification_text = Text(window.disqualification_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
+    window.disqualification_text.pack(side=LEFT, fill=BOTH, expand=True)
 
-    disqualification_scrollbar = Scrollbar(disqualification_frame, command=disqualification_text.yview)
-    disqualification_scrollbar.pack(side=RIGHT, fill=Y)
+    window.disqualification_scrollbar = Scrollbar(window.disqualification_frame, command=window.disqualification_text.yview)
+    window.disqualification_scrollbar.pack(side=RIGHT, fill=Y)
 
-    disqualification_text.config(yscrollcommand=disqualification_scrollbar.set)
+    window.disqualification_text.config(yscrollcommand=window.disqualification_scrollbar.set)
+
 
 
 def switch_to_screen_3(window, reset_to_start_screen):

@@ -212,8 +212,7 @@ def display_details(window):
 
         details_text.delete(1.0, END)  # 기존 내용을 지우고 새로운 내용을 추가합니다.
 
-        details = f"""
-사업명: {selected_item['bizNm']}
+        details = f"""사업명: {selected_item['bizNm']}
 기관명: {selected_item['instNm']}
 사업분류: {selected_item['bizClsfNm']}
 사업기간: {selected_item['bizPeriodSeNm']}
@@ -259,42 +258,53 @@ def InitButton(window, reset_to_start_screen):
 
 def InitEmptyFrames(window):
     # 기본 빈 프레임들을 초기화
-    details_frame = Frame(window, bg='#efc376')
-    details_frame.place(x=600, y=100, width=500, height=280)
+    window.listbox_frame = Frame(window, bg='#efc376')
+    window.listbox_frame.place(x=50, y=300, width=500, height=400)
 
-    details_text = Text(details_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
-    details_text.pack(side=LEFT, fill=BOTH, expand=True)
+    window.listbox_scrollbar = Scrollbar(window.listbox_frame, bg='#efc376')
+    window.listbox_scrollbar.pack(side=RIGHT, fill=Y)
 
-    details_scrollbar = Scrollbar(details_frame, command=details_text.yview)
-    details_scrollbar.pack(side=RIGHT, fill=Y)
+    window.listbox = Listbox(window.listbox_frame, font=(font_name, 10), bg='#efc376', yscrollcommand=window.listbox_scrollbar.set)
+    window.listbox.pack(side=LEFT, fill=BOTH, expand=True)
+    window.listbox.bind('<<ListboxSelect>>', lambda event: on_select(event, window))
 
-    details_text.config(yscrollcommand=details_scrollbar.set)
+    window.listbox_scrollbar.config(command=window.listbox.yview)
 
+    # 상세 정보 프레임
+    window.details_frame = Frame(window, bg='#efc376')
+    window.details_frame.place(x=600, y=100, width=500, height=280)
+
+    window.details_text = Text(window.details_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
+    window.details_text.pack(side=LEFT, fill=BOTH, expand=True)
+
+    window.details_scrollbar = Scrollbar(window.details_frame, command=window.details_text.yview)
+    window.details_scrollbar.pack(side=RIGHT, fill=Y)
+
+    window.details_text.config(yscrollcommand=window.details_scrollbar.set)
 
     # 사업 설명 프레임
-    biz_expln_frame = Frame(window, bg='#efc376')
-    biz_expln_frame.place(x=600, y=400, width=500, height=130)
+    window.biz_expln_frame = Frame(window, bg='#efc376')
+    window.biz_expln_frame.place(x=600, y=400, width=500, height=130)
 
-    biz_expln_text = Text(biz_expln_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
-    biz_expln_text.pack(side=LEFT, fill=BOTH, expand=True)
+    window.biz_expln_text = Text(window.biz_expln_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
+    window.biz_expln_text.pack(side=LEFT, fill=BOTH, expand=True)
 
-    biz_expln_scrollbar = Scrollbar(biz_expln_frame, command=biz_expln_text.yview)
-    biz_expln_scrollbar.pack(side=RIGHT, fill=Y)
+    window.biz_expln_scrollbar = Scrollbar(window.biz_expln_frame, command=window.biz_expln_text.yview)
+    window.biz_expln_scrollbar.pack(side=RIGHT, fill=Y)
 
-    biz_expln_text.config(yscrollcommand=biz_expln_scrollbar.set)
+    window.biz_expln_text.config(yscrollcommand=window.biz_expln_scrollbar.set)
 
     # 대상자 설명 프레임
-    target_expln_frame = Frame(window, bg='#efc376')
-    target_expln_frame.place(x=600, y=550, width=500, height=150)
+    window.target_expln_frame = Frame(window, bg='#efc376')
+    window.target_expln_frame.place(x=600, y=550, width=500, height=150)
 
-    target_expln_text = Text(target_expln_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
-    target_expln_text.pack(side=LEFT, fill=BOTH, expand=True)
+    window.target_expln_text = Text(window.target_expln_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
+    window.target_expln_text.pack(side=LEFT, fill=BOTH, expand=True)
 
-    target_expln_scrollbar = Scrollbar(target_expln_frame, command=target_expln_text.yview)
-    target_expln_scrollbar.pack(side=RIGHT, fill=Y)
+    window.target_expln_scrollbar = Scrollbar(window.target_expln_frame, command=window.target_expln_text.yview)
+    window.target_expln_scrollbar.pack(side=RIGHT, fill=Y)
 
-    target_expln_text.config(yscrollcommand=target_expln_scrollbar.set)
-
+    window.target_expln_text.config(yscrollcommand=window.target_expln_scrollbar.set)
 
 def switch_to_screen_2(window, reset_to_start_screen):
     clear_window(window)
