@@ -200,7 +200,7 @@ def display_details(window):
     if selected_item:
         # 상세 정보 프레임
         details_frame = Frame(window, bg='#efc376')
-        details_frame.place(x=600, y=100, width=500, height=300)
+        details_frame.place(x=600, y=100, width=500, height=280)
 
         details_text = Text(details_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
         details_text.pack(side=LEFT, fill=BOTH, expand=True)
@@ -225,7 +225,7 @@ def display_details(window):
 
         # 사업 설명 프레임
         biz_expln_frame = Frame(window, bg='#efc376')
-        biz_expln_frame.place(x=600, y=400, width=500, height=150)
+        biz_expln_frame.place(x=600, y=400, width=500, height=130)
 
         biz_expln_text = Text(biz_expln_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
         biz_expln_text.pack(side=LEFT, fill=BOTH, expand=True)
@@ -260,7 +260,7 @@ def InitButton(window, reset_to_start_screen):
 def InitEmptyFrames(window):
     # 기본 빈 프레임들을 초기화
     details_frame = Frame(window, bg='#efc376')
-    details_frame.place(x=600, y=100, width=500, height=300)
+    details_frame.place(x=600, y=100, width=500, height=280)
 
     details_text = Text(details_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
     details_text.pack(side=LEFT, fill=BOTH, expand=True)
@@ -273,7 +273,7 @@ def InitEmptyFrames(window):
 
     # 사업 설명 프레임
     biz_expln_frame = Frame(window, bg='#efc376')
-    biz_expln_frame.place(x=600, y=400, width=500, height=150)
+    biz_expln_frame.place(x=600, y=400, width=500, height=130)
 
     biz_expln_text = Text(biz_expln_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
     biz_expln_text.pack(side=LEFT, fill=BOTH, expand=True)

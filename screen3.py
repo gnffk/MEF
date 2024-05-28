@@ -29,7 +29,7 @@ def LoadopenAPI(search_category=None, search_query=None):
     endpoint = "/1051000/recruitment/list"
     params = {
         "serviceKey": "GuwRZzKrYZA0iHG1Y+ArdizUhu0a32Kym5AKO4tlpC71aaaCEI6YOzWIEfHyipefqThokj/9YurMG0WibwIfrA==",
-        "numOfRows": "700"
+        "numOfRows": "500"
     }
     response = fetch_data_from_api(host, endpoint, params)
     if response and "result" in response:
