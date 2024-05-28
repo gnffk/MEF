@@ -22,7 +22,6 @@ data = None
 filtered_data = None
 selected_item = None  # 전역 변수로 선택한 아이템 저장
 
-
 def LoadopenAPI(bizClsf=None):
     global data, filtered_data
     data = []
@@ -58,11 +57,9 @@ def LoadopenAPI(bizClsf=None):
         filtered_data = None
         print("데이터를 불러올 수 없습니다.")
 
-
 def InitLabel(window):
     label_topic = Label(window, text="공공기관 진행 사업 정보", font=(font_name, 30), bg='#efc376')
     label_topic.place(x=50, y=50)
-
 
 def InitCategoryDropdown(window):
     selected_category = StringVar(window)
@@ -76,7 +73,6 @@ def InitCategoryDropdown(window):
     dropdown.place(x=200, y=150, width=200, height=30)
 
     InitSubCategoryDropdown(window, "건강")  # 초기 하위 카테고리 설정
-
 
 def InitSubCategoryDropdown(window, category):
     subcategories = categories[category]
@@ -101,10 +97,8 @@ def InitSubCategoryDropdown(window, category):
                                   command=lambda: select_subcategory(window, selected_subcategory.get()))
     window.select_button.place(x=410, y=200, width=60, height=30)
 
-
 def update_subcategories(window, category):
     InitSubCategoryDropdown(window, category)
-
 
 def select_subcategory(window, subcategory):
     bizClsf = None if subcategory == "전체 - NULL" else subcategory.split(" - ")[1]
@@ -127,7 +121,6 @@ def select_subcategory(window, subcategory):
 
     update_listbox(listbox, bizClsf)
 
-
 def update_listbox(listbox, subcategory_code):
     global filtered_data
     listbox.delete(0, END)
@@ -136,7 +129,7 @@ def update_listbox(listbox, subcategory_code):
             filtered_items = [item for item in filtered_data if item.get('bizClsf') is None]
         else:
             filtered_items = [item for item in filtered_data if subcategory_code == "B0" or (
-                    item.get('bizClsf') and item['bizClsf'].startswith(subcategory_code))]
+                        item.get('bizClsf') and item['bizClsf'].startswith(subcategory_code))]
         if filtered_items:
             for item in filtered_items:
                 listbox.insert(END, f"{item['bizNm']}")
@@ -144,7 +137,6 @@ def update_listbox(listbox, subcategory_code):
             listbox.insert(END, "관련 데이터가 없습니다.")
     else:
         listbox.insert(END, "데이터를 불러올 수 없습니다.")
-
 
 def InitSearch(window):
     search_label = Label(window, text="검색:", font=(font_name, 15), bg='#efc376')
@@ -156,7 +148,6 @@ def InitSearch(window):
     search_button = Button(window, text="검색", font=(font_name, 12), bg='#efc376',
                            command=lambda: search_data(window, search_entry.get()))
     search_button.place(x=500, y=250)
-
 
 def search_data(window, query):
     global filtered_data
@@ -182,7 +173,6 @@ def search_data(window, query):
 
     update_listbox_search(listbox, query)
 
-
 def update_listbox_search(listbox, query):
     global filtered_data
     listbox.delete(0, END)
@@ -196,7 +186,6 @@ def update_listbox_search(listbox, query):
     else:
         listbox.insert(END, "데이터를 불러올 수 없습니다.")
 
-
 def on_select(event, window):
     global selected_item
     widget = event.widget
@@ -205,7 +194,6 @@ def on_select(event, window):
         index = selection[0]
         selected_item = filtered_data[index]
         display_details(window)
-
 
 def display_details(window):
     global selected_item
@@ -265,10 +253,47 @@ def display_details(window):
         target_expln_text.delete(1.0, END)
         target_expln_text.insert(END, f"대상자설명: \n{selected_item['utztnTrgtExpln']}")
 
-
 def InitButton(window, reset_to_start_screen):
     back_button = create_back_button(window, reset_to_start_screen)
     back_button.place(x=1100, y=50)
+
+def InitEmptyFrames(window):
+    # 기본 빈 프레임들을 초기화
+    details_frame = Frame(window, bg='#efc376')
+    details_frame.place(x=600, y=100, width=500, height=300)
+
+    details_text = Text(details_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
+    details_text.pack(side=LEFT, fill=BOTH, expand=True)
+
+    details_scrollbar = Scrollbar(details_frame, command=details_text.yview)
+    details_scrollbar.pack(side=RIGHT, fill=Y)
+
+    details_text.config(yscrollcommand=details_scrollbar.set)
+
+
+    # 사업 설명 프레임
+    biz_expln_frame = Frame(window, bg='#efc376')
+    biz_expln_frame.place(x=600, y=400, width=500, height=150)
+
+    biz_expln_text = Text(biz_expln_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
+    biz_expln_text.pack(side=LEFT, fill=BOTH, expand=True)
+
+    biz_expln_scrollbar = Scrollbar(biz_expln_frame, command=biz_expln_text.yview)
+    biz_expln_scrollbar.pack(side=RIGHT, fill=Y)
+
+    biz_expln_text.config(yscrollcommand=biz_expln_scrollbar.set)
+
+    # 대상자 설명 프레임
+    target_expln_frame = Frame(window, bg='#efc376')
+    target_expln_frame.place(x=600, y=550, width=500, height=150)
+
+    target_expln_text = Text(target_expln_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
+    target_expln_text.pack(side=LEFT, fill=BOTH, expand=True)
+
+    target_expln_scrollbar = Scrollbar(target_expln_frame, command=target_expln_text.yview)
+    target_expln_scrollbar.pack(side=RIGHT, fill=Y)
+
+    target_expln_text.config(yscrollcommand=target_expln_scrollbar.set)
 
 
 def switch_to_screen_2(window, reset_to_start_screen):
@@ -279,3 +304,6 @@ def switch_to_screen_2(window, reset_to_start_screen):
     InitButton(window, reset_to_start_screen)  # Button 초기화
     InitCategoryDropdown(window)  # 사업 분야 드롭다운 초기화
     InitSearch(window)  # 검색 초기화
+    InitEmptyFrames(window)  # 빈 프레임 초기화
+
+
