@@ -38,13 +38,7 @@ def create_start_screen(window):
                      command=lambda: switch_to_screen_3(window, reset_to_start_screen))
     button3.place(x=750, y=500)
 
-    # 오른쪽 상단에 버튼 추가 (이메일, 텔레그램 챗봇, 북마크)
-    email_image = Image.open("image/email.png")
-    re_email_image = email_image.resize((100,100))
-    my_email_img = ImageTk.PhotoImage(re_email_image)
-    email_button = Button(window, image=my_email_img, bg='#efc376', command=open_email)
-    email_button.image = my_email_img  # 이미지 객체 유지
-    email_button.place(x=750, y=50, width=100, height=100)
+
 
     telegram_image = Image.open("image/telegram.png")
     re_telegram_image = telegram_image.resize((100, 100))
@@ -94,14 +88,13 @@ def reset_to_start_screen(window):
 def open_email():
     print("이메일 버튼 클릭")
 
-<<<<<<< HEAD
+
 def start_telegram():
     threading.Thread(target=start_telegram_bot).start()
     webbrowser.open("tg://resolve?domain=KorMEF_bot")
 def open_bookmark():
     print("북마크 버튼 클릭")
-=======
+
 def open_telegram():
     print("텔레그램 버튼 클릭")
     webbrowser.open("tg://resolve?domain=KorMEF_bot")
->>>>>>> MEF_Do-0-k
