@@ -36,7 +36,6 @@ def LoadopenAPI(bizClsf=None):
         }
         if bizClsf:
             params["bizClsf"] = bizClsf
-
         response = fetch_data_from_api(host, endpoint, params)
         if response and "result" in response:
             page_data = response["result"]
@@ -49,9 +48,9 @@ def LoadopenAPI(bizClsf=None):
 
     if data:
         filtered_data = data  # 초기 필터링 데이터 설정
-        # print("API에서 불러온 데이터:")
-        # print(json.dumps(data, indent=4, ensure_ascii=False))
-        # print(f"불러온 데이터 개수: {len(data)}")
+        print("API에서 불러온 데이터:")
+        print(json.dumps(data, indent=4, ensure_ascii=False))
+        print(f"불러온 데이터 개수: {len(data)}")
     else:
         data = None
         filtered_data = None
