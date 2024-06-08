@@ -4,7 +4,7 @@ from screen1 import switch_to_screen_1
 from screen2 import switch_to_screen_2
 from screen3 import switch_to_screen_3
 from PIL import ImageTk, Image
-
+import webbrowser
 def create_start_screen(window):
     clear_window(window)
 
@@ -64,27 +64,27 @@ def create_start_screen(window):
     my_main_image = ImageTk.PhotoImage(re_main_image)
     main_Label1 = Label(window, image=my_main_image, bg='#efc376')
     main_Label1.image = my_main_image  # 이미지 객체 유지
-    main_Label1.place(x=0, y=600, width=200, height=200)
+    main_Label1.place(x=0, y=630, width=200, height=200)
 
     main_Label2 = Label(window, image=my_main_image, bg='#efc376')
     main_Label2.image = my_main_image  # 이미지 객체 유지
-    main_Label2.place(x=200, y=600, width=200, height=200)
+    main_Label2.place(x=200, y=630, width=200, height=200)
 
     main_Label3 = Label(window, image=my_main_image, bg='#efc376')
     main_Label3.image = my_main_image  # 이미지 객체 유지
-    main_Label3.place(x=400, y=600, width=200, height=200)
+    main_Label3.place(x=400, y=630, width=200, height=200)
 
     main_Label4 = Label(window, image=my_main_image, bg='#efc376')
     main_Label4.image = my_main_image  # 이미지 객체 유지
-    main_Label4.place(x=600, y=600, width=200, height=200)
+    main_Label4.place(x=600, y=630, width=200, height=200)
 
     main_Label5 = Label(window, image=my_main_image, bg='#efc376')
     main_Label5.image = my_main_image  # 이미지 객체 유지
-    main_Label5.place(x=800, y=600, width=200, height=200)
+    main_Label5.place(x=800, y=630, width=200, height=200)
 
     main_Label6 = Label(window, image=my_main_image, bg='#efc376')
     main_Label6.image = my_main_image  # 이미지 객체 유지
-    main_Label6.place(x=1000, y=600, width=200, height=200)
+    main_Label6.place(x=1000, y=630, width=200, height=200)
 def reset_to_start_screen(window):
     create_start_screen(window)
 
@@ -94,6 +94,6 @@ def open_email():
 
 def open_telegram():
     print("텔레그램 버튼 클릭")
-
+    webbrowser.open("tg://resolve?domain=KorMEF_bot")
 def open_bookmark():
     print("북마크 버튼 클릭")
