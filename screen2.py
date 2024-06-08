@@ -49,9 +49,9 @@ def LoadopenAPI(bizClsf=None):
 
     if data:
         filtered_data = data  # 초기 필터링 데이터 설정
-        print("API에서 불러온 데이터:")
-        print(json.dumps(data, indent=4, ensure_ascii=False))
-        print(f"불러온 데이터 개수: {len(data)}")
+        # print("API에서 불러온 데이터:")
+        # print(json.dumps(data, indent=4, ensure_ascii=False))
+        # print(f"불러온 데이터 개수: {len(data)}")
     else:
         data = None
         filtered_data = None
@@ -64,6 +64,7 @@ def InitLabel(window):
 def InitCategoryDropdown(window):
     selected_category = StringVar(window)
     selected_category.set("건강")  # 기본값 설정
+    dropdown_label = Label(window, text="사업 분야(대):", font=(font_name, 15), bg='#efc376')
     dropdown_label = Label(window, text="사업 분야(대):", font=(font_name, 15), bg='#efc376')
     dropdown_label.place(x=50, y=150)
 
@@ -103,7 +104,6 @@ def update_subcategories(window, category):
 def select_subcategory(window, subcategory):
     bizClsf = None if subcategory == "전체 - NULL" else subcategory.split(" - ")[1]
     LoadopenAPI(bizClsf=bizClsf)  # 선택한 후에 데이터를 다시 로드합니다
-    print(f"Selected subcategory: {subcategory}")
     if hasattr(window, 'listbox_frame'):
         window.listbox_frame.destroy()
 
