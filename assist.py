@@ -7,12 +7,13 @@ from PIL import Image, ImageTk
 import urllib.parse
 import http.client
 import json
+import spam
 
 # 전역 변수로 이미지와 폰트를 로드
 background_image = None
 font_name = "충주김생체 TTF"
-
-
+print(spam.strlen("충주김생체 TTF"))
+print(spam.strlen("충주"))
 
 def preload_assets(window):
     global background_image
