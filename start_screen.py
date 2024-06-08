@@ -3,6 +3,7 @@ from assist import *
 from screen1 import switch_to_screen_1
 from screen2 import switch_to_screen_2
 from screen3 import switch_to_screen_3
+from screen4 import switch_to_screen_4
 from PIL import ImageTk, Image
 import webbrowser
 def create_start_screen(window):
@@ -54,7 +55,7 @@ def create_start_screen(window):
     bookmark_image = Image.open("image/bookmark.png")
     re_bookmark_image = bookmark_image.resize((100, 100))
     my_bookmark_image = ImageTk.PhotoImage(re_bookmark_image)
-    bookmark_button = Button(window, image=my_bookmark_image, bg='#efc376', command=open_bookmark)
+    bookmark_button = Button(window, image=my_bookmark_image, bg='#efc376', command=lambda: switch_to_screen_4(window, reset_to_start_screen))
     bookmark_button.image = my_bookmark_image  # 이미지 객체 유지
     bookmark_button.place(x=1010, y=50, width=100, height=100)
 
@@ -95,5 +96,3 @@ def open_email():
 def open_telegram():
     print("텔레그램 버튼 클릭")
     webbrowser.open("tg://resolve?domain=KorMEF_bot")
-def open_bookmark():
-    print("북마크 버튼 클릭")
