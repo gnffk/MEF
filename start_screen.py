@@ -94,14 +94,11 @@ def reset_to_start_screen(window):
 def open_email():
     print("이메일 버튼 클릭")
 
-<<<<<<< HEAD
 def start_telegram():
     threading.Thread(target=start_telegram_bot).start()
     webbrowser.open("tg://resolve?domain=KorMEF_bot")
 def open_bookmark():
     print("북마크 버튼 클릭")
-=======
 def open_telegram():
     print("텔레그램 버튼 클릭")
     webbrowser.open("tg://resolve?domain=KorMEF_bot")
->>>>>>> MEF_Do-0-k
