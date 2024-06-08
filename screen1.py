@@ -22,8 +22,10 @@ def LoadopenAPI():
         "numOfRows": "366"
     }
     response = fetch_data_from_api(host, endpoint, params)
+    print(response)
     if response and "result" in response:
         data = response["result"]
+        print(data)
         filtered_data = data  # 초기 필터링 데이터 설정
     else:
         data = None

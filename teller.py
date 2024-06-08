@@ -15,44 +15,40 @@ import traceback
 import noti
 
 
-def replyAptData(date_param, user, loc_param='11710'):
-    print(user, date_param, loc_param)
-    res_list = noti.getData( loc_param, date_param )
-    msg = ''
-    for r in res_list:
-        print( str(datetime.now()).split('.')[0], r )
-        if len(r+msg)+1>noti.MAX_MSG_LENGTH:
-            noti.sendMessage( user, msg )
-            msg = r+'\n'
+def send_welcome_message(chat_id):
+    welcome_message = ("안녕하세요 MEF 챗봇입니다. 원하시는 정보를 입력해주세요\n"
+                       "1. 기업 정보\n"
+                       "2. 채용 정보\n"
+                       "3. 사업 정보")
+    noti.sendMessage(chat_id, welcome_message)
+
+
+def send_company_categories(chat_id):
+    categories_message = ("원하시는 기업 정보를 선택해주세요\n"
+                          "1. 공기업\n"
+                          "2. 준정부기관\n"
+                          "3. 기타공공기관")
+    noti.sendMessage(chat_id, categories_message)
+
+
+def handle_company_details(chat_id, category):
+    inst_type_map = {
+        '공기업': '공기업',
+        '준정부기관': '준정부기관',
+        '기타공공기관': '기타공공기관'
+    }
+    inst_type = inst_type_map.get(category)
+    if inst_type:
+        res_list = noti.getData1(inst_type)
+        if res_list:
+            details_message = '\n'.join(res_list)
         else:
-            msg += r+'\n'
-    if msg:
-        noti.sendMessage( user, msg )
+            details_message = f'{inst_type}에 대한 정보를 찾을 수 없습니다.'
     else:
-        noti.sendMessage( user, '%s 기간에 해당하는 데이터가 없습니다.'%date_param )
+        details_message = "잘못된 선택입니다. 다시 시도해주세요."
 
-def save( user, loc_param ):
-    conn = sqlite3.connect('users.db')
-    cursor = conn.cursor()
-    cursor.execute('CREATE TABLE IF NOT EXISTS users( user TEXT, location TEXT, PRIMARY KEY(user, location) )')
-    try:
-        cursor.execute('INSERT INTO users(user, location) VALUES ("%s", "%s")' % (user, loc_param))
-    except sqlite3.IntegrityError:
-        noti.sendMessage( user, '이미 해당 정보가 저장되어 있습니다.' )
-        return
-    else:
-        noti.sendMessage( user, '저장되었습니다.' )
-        conn.commit()
-
-def check( user ):
-    conn = sqlite3.connect('users.db')
-    cursor = conn.cursor()
-    cursor.execute('CREATE TABLE IF NOT EXISTS users( user TEXT, location TEXT, PRIMARY KEY(user, location) )')
-    cursor.execute('SELECT * from users WHERE user="%s"' % user)
-    for data in cursor.fetchall():
-        row = 'id:' + str(data[0]) + ', location:' + data[1]
-        noti.sendMessage( user, row )
-
+    noti.sendMessage(chat_id, details_message)
+    send_welcome_message(chat_id)  # 정보를 출력한 후 다시 초기 화면으로 돌아갑니다.
 
 def handle(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
@@ -63,30 +59,26 @@ def handle(msg):
     text = msg['text']
     args = text.split(' ')
 
-    if text.startswith('지역') and len(args)>1:
-        print('try to 지역', args[1])
-        replyAptData( '201705', chat_id, args[1] )
-    elif text.startswith('저장')  and len(args)>1:
-        print('try to 저장', args[1])
-        save( chat_id, args[1] )
-    elif text.startswith('확인'):
-        print('try to 확인')
-        check( chat_id )
+    if text.startswith('안녕') or text.startswith('/start'):
+        send_welcome_message(chat_id)
+    elif text.startswith('기업'):
+        send_company_categories(chat_id)
+    elif text in ['공기업', '준정부기관', '기타공공기관']:
+        handle_company_details(chat_id, text)
+    elif text.startswith('채용'):
+        noti.sendMessage(chat_id, '채용 정보를 출력합니다...')
+    elif text.startswith('사업'):
+        noti.sendMessage(chat_id, '사업 정보를 출력합니다...')
     else:
-        noti.sendMessage(chat_id, '모르는 명령어입니다.\n지역 [지역번호], 저장 [지역번호], 확인 중 하나의 명령을 입력하세요.')
+        noti.sendMessage(chat_id, '모르는 명령어입니다.\n')
 
 
-today = date.today()
-current_month = today.strftime('%Y%m')
+def start_telegram_bot():
+    bot = telepot.Bot(noti.TOKEN)
+    bot.message_loop(handle)
+    while True:
+        time.sleep(10)
 
-print( '[',today,']received token :', noti.TOKEN )
-
-bot = telepot.Bot(noti.TOKEN)
-pprint( bot.getMe() )
-
-bot.message_loop(handle)
-
-print('Listening...')
-
-while 1:
-  time.sleep(10)
+# 이 부분은 메인 프로그램에서 직접 실행하지 않도록 주석 처리합니다.
+# if __name__ == '__main__':
+#    start_telegram_bot()

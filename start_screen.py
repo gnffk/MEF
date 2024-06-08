@@ -1,10 +1,13 @@
 from tkinter import *
 from assist import *
+from teller import start_telegram_bot
 from screen1 import switch_to_screen_1
 from screen2 import switch_to_screen_2
 from screen3 import switch_to_screen_3
 from PIL import ImageTk, Image
+import threading
 import webbrowser
+
 def create_start_screen(window):
     clear_window(window)
 
@@ -35,8 +38,6 @@ def create_start_screen(window):
     button3.place(x=750, y=500)
 
     # 오른쪽 상단에 버튼 추가 (이메일, 텔레그램 챗봇, 북마크)
-
-
     email_image = Image.open("image/email.png")
     re_email_image = email_image.resize((100,100))
     my_email_img = ImageTk.PhotoImage(re_email_image)
@@ -47,7 +48,7 @@ def create_start_screen(window):
     telegram_image = Image.open("image/telegram.png")
     re_telegram_image = telegram_image.resize((100, 100))
     my_telegram_image = ImageTk.PhotoImage(re_telegram_image)
-    telegram_button = Button(window, image=my_telegram_image, bg='#efc376', command=open_telegram)
+    telegram_button = Button(window, image=my_telegram_image, bg='#efc376', command=start_telegram)
     telegram_button.image = my_telegram_image  # 이미지 객체 유지
     telegram_button.place(x=880, y=50, width=100, height=100)
 
@@ -85,15 +86,15 @@ def create_start_screen(window):
     main_Label6 = Label(window, image=my_main_image, bg='#efc376')
     main_Label6.image = my_main_image  # 이미지 객체 유지
     main_Label6.place(x=1000, y=630, width=200, height=200)
+
 def reset_to_start_screen(window):
     create_start_screen(window)
 
-# 버튼 클릭 시 실행될 함수들
 def open_email():
     print("이메일 버튼 클릭")
 
-def open_telegram():
-    print("텔레그램 버튼 클릭")
+def start_telegram():
+    threading.Thread(target=start_telegram_bot).start()
     webbrowser.open("tg://resolve?domain=KorMEF_bot")
 def open_bookmark():
     print("북마크 버튼 클릭")
