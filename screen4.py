@@ -158,7 +158,7 @@ def display_details(window, item):
         window.bar_chart_canvas.destroy()
 
     bar_chart_canvas = Canvas(window, bg='#efc376')
-    bar_chart_canvas.place(x=575, y=370, width=500, height=300)
+    bar_chart_canvas.place(x=575, y=370, width=600, height=380)
 
     # 막대 그래프 데이터 준비
     fclt_type_counts = {}  # fcltTypeNm 값의 개수를 저장할 딕셔너리
@@ -171,7 +171,7 @@ def display_details(window, item):
     bar_width = 30
     space_between_bars = 10
     starting_x = 50
-    starting_y = 250  # 높이 조정
+    starting_y = 300  # 높이 조정
     max_value = max(fclt_type_counts.values())
 
     # 막대 그래프 그리기
@@ -182,11 +182,12 @@ def display_details(window, item):
         x1 = x0 + bar_width
         y1 = starting_y
         bar_chart_canvas.create_rectangle(x0, y0, x1, y1, fill='blue')
-        bar_chart_canvas.create_text((x0 + x1) // 2, y0 - 10, text=fclt_type, fill='black', font=(font_name, 10))
+        bar_chart_canvas.create_text(x0 + 15, y0 - 30, text=fclt_type, fill='black', font=(font_name, 10),
+                                     angle=90)  # fclt_type를 세로로 작성
         bar_chart_canvas.create_text((x0 + x1) // 2, y1 + 10, text=str(count), fill='black', font=(font_name, 10))
 
     # x축 레이블
-    bar_chart_canvas.create_text(250, 280, text="Facility Type", fill='black', font=(font_name, 12))  # 위치 조정
+    bar_chart_canvas.create_text(300, 360, text="Facility Type", fill='black', font=(font_name, 12))  # 위치 조정
     # y축 레이블
     bar_chart_canvas.create_text(30, 260, text="Count", fill='black', font=(font_name, 8))  # 위치 조정
 def InitLabel(window):
@@ -224,7 +225,7 @@ def InitEmptyFrames(window):
     window.details_text.config(yscrollcommand=window.details_scrollbar.set)
 
     window.procedure_frame = Frame(window, bg='#efc376')
-    window.procedure_frame.place(x=575, y=370, width=500, height=380)
+    window.procedure_frame.place(x=575, y=370, width=600, height=380)
 
     window.procedure_text = Text(window.procedure_frame, font=(font_name, 12), bg='#efc376', wrap=WORD)
     window.procedure_text.pack(side=LEFT, fill=BOTH, expand=True)
