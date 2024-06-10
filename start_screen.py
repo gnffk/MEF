@@ -5,6 +5,7 @@ from screen1 import switch_to_screen_1
 from screen2 import switch_to_screen_2
 from screen3 import switch_to_screen_3
 from screen4 import switch_to_screen_4
+from email_sender import open_email_window
 from PIL import ImageTk, Image
 import threading
 import webbrowser
@@ -38,7 +39,12 @@ def create_start_screen(window):
                      command=lambda: switch_to_screen_3(window, reset_to_start_screen))
     button3.place(x=750, y=500)
 
-
+    email_image = Image.open("image/email.png")
+    re_email_image = email_image.resize((100, 100))
+    my_email_image = ImageTk.PhotoImage(re_email_image)
+    email_button = Button(window, image=my_email_image, bg='#efc376', command=open_email_window)
+    email_button.image = my_email_image  # 이미지 객체 유지
+    email_button.place(x=750, y=50, width=100, height=100)
 
     telegram_image = Image.open("image/telegram.png")
     re_telegram_image = telegram_image.resize((100, 100))
@@ -85,8 +91,6 @@ def create_start_screen(window):
 def reset_to_start_screen(window):
     create_start_screen(window)
 
-def open_email():
-    print("이메일 버튼 클릭")
 
 
 def start_telegram():
