@@ -47,7 +47,7 @@ def send_busy_categories(chat_id):
     noti.sendMessage(chat_id, categories_message)
 
 def send_categories(chat_id):
-    categories_message = ("원하시는 기업 정보를 선택해주세요\n"
+    categories_message = ("원하시는 채용 정보를 선택해주세요\n"
                           "1. 정규직\n"
                           "2. 무기계약직\n"
                           "3. 비정규직\n"
